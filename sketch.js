@@ -159,6 +159,10 @@ function setup() {
 
   watchTime = 0;
   
+  button = createButton('fullscreen');
+  button.position(0,0);
+  button.mousePressed(full);
+
   pixelDensity(1);
 
   /*
@@ -287,7 +291,7 @@ function setup() {
 function draw() {
   fill(0);
   noStroke();
-  rect(w/3,0,w,5*h/6);
+  rect(w/3,0,w,h);
   //fill(255);
   //rect(w/3, 5*h/6,w,h);
   
@@ -519,16 +523,14 @@ function draw() {
 }
  
 
+function full() {
+  var fs = fullscreen();
+  fullscreen(!fs);
+}
+
  
 function touchStarted() {
-  console.info(mouseX);
-  console.info(mouseY);
-  if(mouseX > w/3 && mouseX < w && mouseY > 5*h/6 && mouseY < h) {
-    console.info('full');
-    let fs = fullscreen();
-    fullscreen(!fs);
-  } else {
-    if(songPlay.isPlaying() && !songComplete.isPlaying() && !songOut.isPlaying() && !songStart.isPlaying() && !songWarning.isPlaying()) {
+   if(songPlay.isPlaying() && !songComplete.isPlaying() && !songOut.isPlaying() && !songStart.isPlaying() && !songWarning.isPlaying()) {
       songPlay.stop();
       if(!songComplete.isPlaying()) {
         console.info("complete");
@@ -536,13 +538,6 @@ function touchStarted() {
         songComplete.onended(standbyCallback);
       }
     }
-
-  }
-  
-  //if (mouseX > 0 && mouseX < 320 && mouseY > 0 && mouseY < 240) {
-  //   let fs = fullscreen();
-  //   fullscreen(!fs);
-  //}
 }
 
 
