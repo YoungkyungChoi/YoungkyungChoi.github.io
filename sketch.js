@@ -119,7 +119,7 @@ function setup() {
   myCapture.elt.setAttribute('playsinline', '');
   myCapture.parent('container');
   //myCapture.hide();
-  cnv = createCanvas(w, h); 
+  //cnv = createCanvas(w, h); 
   cnv.parent('container');
 
   tracker = new tracking.ObjectTracker(['face']);
@@ -293,7 +293,7 @@ function setup() {
 function draw() {
   fill(0);
   noStroke();
-  rect(w/3,0,w,h);
+  rect(w/3,0,1524,h);
   //fill(255);
   //rect(w/3, 5*h/6,w,h);
   
