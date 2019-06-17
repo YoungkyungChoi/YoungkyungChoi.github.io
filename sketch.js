@@ -314,15 +314,15 @@ function draw() {
     image(myVida.thresholdImage, 0, 2*h/3, w/3, h/3);
     
    
-    textSize(10);
+    textSize(30);
     fill(255,0,200);
-    textAlign(LEFT);
+    textAlign(LEFT,BOTTOM);
     // let's also describe the displayed images
     noStroke(); fill(255, 0, 255);
-    text('Face Detection', 20, 40);
+    text('Face Detection', 0, h/3);
     //text('vida: progressive background image', 340, 20);
-    text('Zone Detection', 20, 2*h/3 + 40);
-    text('Motion Detection', 20, h/3 + 40);
+    text('Zone Detection', 0, h);
+    text('Motion Detection', 0, h*2/3);
     
     /*
       VIDA has two built-in versions of the function drawing active zones:
@@ -459,8 +459,9 @@ function draw() {
   updatePixels();
   delta = countCurrent - countPrevious;
   fill(255,0,255);
+  textSize(15);
   text('Movement : ' + countCurrent,20,h/3 + 40 + 10);
-  text('Delta :'+ delta, 20,h/3 + 40 + 20);
+  text('Delta : '+ delta, 20,h/3 + 40 + 30);
   
 
   stroke(0);
