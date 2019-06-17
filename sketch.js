@@ -832,8 +832,8 @@ class Eye {
           this.angle_d = this.angle*(180/PI);
           noFill()
           strokeWeight(weight);
-          arc(this.xoffset+this.x, this.yoffset+this.y, 2*this.radi, 2*this.radi, PI+this.angle, TWO_PI - this.angle);
-          arc(this.xoffset+this.x, this.yoffset-this.y, 2*this.radi, 2*this.radi, this.angle, PI - this.angle);
+          arc(this.xoffset+this.x, this.yoffset+this.y, 2*this.radi + random(-5,5), 2*this.radi + random(-5,5), PI+this.angle, TWO_PI - this.angle);
+          arc(this.xoffset+this.x, this.yoffset-this.y, 2*this.radi + random(-5,5), 2*this.radi + random(-5,5), this.angle, PI - this.angle);
           strokeWeight(weight/2);
           
           fill(255,0,255);
@@ -844,7 +844,7 @@ class Eye {
           strokeWeight(7);
           line(this.xoffset+this.x-100,this.yoffset,this.xoffset+this.x + 100,this.yoffset);
           line(this.xoffset+this.x,this.yoffset+30,this.xoffset+this.x,this.yoffset+70);
-          line(this.xoffset+this.x -100,this.yoffset,this.xoffset+this.x + 100,this.yoffset);
+          line(this.xoffset+this.x -100,this.yoffset + random(-5,5),this.xoffset+this.x + 100,this.yoffset + random(-5,5));
           fill(255);
           textSize(70);
           textAlign(CENTER,CENTER);
