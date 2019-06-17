@@ -81,6 +81,7 @@ var countPrevious;
 var delta;
 
 var watchTime;
+var playCount;
 
 var gif_fire01, gif_fire02, gif_fire03;
 
@@ -142,7 +143,7 @@ function setup() {
       })
   });
 
-  eye = new Eye(400,(w-w/3),height/2);
+  eye = new Eye(400,w*2/3,height/2);
 
   songStart.setVolume(0.5);
   songComplete.setVolume(0.5);
@@ -158,6 +159,7 @@ function setup() {
   delta = 0;
 
   watchTime = 0;
+  playCount = 0;
   
   button = createButton('fullscreen');
   button.position(0,0);
@@ -479,6 +481,11 @@ function draw() {
         songStart.play();
         songStart.onended(playCallback);
       }else if(gameStep == 'PLAY') {
+        // if(playCount == 5) {
+        //   gameStep = 'STANDBY';
+        //   console.info("count reset");
+        //   playCount = 0;
+        // }
         songPlay.play();
         songPlay.onended(openCallback);
       }else if (gameStep == 'OPEN') {
@@ -500,6 +507,7 @@ function draw() {
         songOut.play();
         songOut.onended(standbyCallback);
       }else if(gameStep == 'STANDBY') {
+        gameStart = false;
         gameStep = "START";
       }
     } else if(songStart.isPlaying()) {
@@ -592,6 +600,7 @@ class Eye {
       if(watchTime > 50) {
         gameStep = 'CLOSE';
         watchTime = 0;
+        playCount++;
       }
       //println("case Watching");
       break;
@@ -606,10 +615,20 @@ class Eye {
       //line(this.xoffset,this.yoffset,this.xoffset + this.r/2, this.yoffset);
       //arc(this.xoffset+this.x, this.yoffset+this.y, 2*this.radi, 2*this.radi, PI+this.angle, TWO_PI - this.angle);
       noFill();
-      arc(this.xoffset+this.x, this.yoffset-this.y-15, 2*this.radi, 2*this.radi, this.angle+0.015, PI - this.angle-0.015);
-      arc(this.xoffset+this.x, this.yoffset-this.y, 2*this.radi, 2*this.radi, this.angle, PI - this.angle);
+      //arc(this.xoffset+this.x, this.yoffset-this.y-15, 2*this.radi, 2*this.radi, this.angle+0.015, PI - this.angle-0.015);
+      arc(this.xoffset+this.x, this.yoffset-this.y, 2*this.radi+random(-3,3), 2*this.radi+random(-3,3), this.angle, PI - this.angle);
+      line(this.xoffset+random(-2,2),this.yoffset+random(-2,2),this.xoffset-4+random(-2,2), this.yoffset+20+random(-2,2));
+      line(this.xoffset+49+random(-2,2),this.yoffset+9+random(-2,2),this.xoffset+46+random(-2,2), this.yoffset+29+random(-2,2));
+      line(this.xoffset+100+random(-2,2),this.yoffset+15+random(-2,2),this.xoffset+98+random(-2,2), this.yoffset+35+random(-2,2));
+      line(this.xoffset+151+random(-2,2),this.yoffset+19+random(-2,2),this.xoffset+150+random(-2,2), this.yoffset+39+random(-2,2));
+      line(this.xoffset+200+random(-2,2),this.yoffset+20+random(-2,2),this.xoffset+200+random(-2,2), this.yoffset+40+random(-2,2));
+      line(this.xoffset+251+random(-2,2),this.yoffset+18+random(-2,2),this.xoffset+252+random(-2,2), this.yoffset+38+random(-2,2));
+      line(this.xoffset+302+random(-2,2),this.yoffset+15+random(-2,2),this.xoffset+304+random(-2,2), this.yoffset+35+random(-2,2));
+      line(this.xoffset+352+random(-2,2),this.yoffset+8+random(-2,2),this.xoffset+355+random(-2,2), this.yoffset+28+random(-2,2));
+      line(this.xoffset+400+random(-2,2),this.yoffset+random(-2,2),this.xoffset+404+random(-2,2), this.yoffset+20+random(-2,2));
+      
       this.eyeState = false;
-      console.info(this.angle);
+      //console.info(this.angle);
       //line(xoffset, yoffset, xoffset+r, yoffset); 
     
 
@@ -819,7 +838,13 @@ class Eye {
         arc(this.xoffset+this.x, this.yoffset, (this.r/2)*4/5, (this.r/2)*4/5, -(HALF_PI*this.h*2/this.r), (HALF_PI*this.h*2/this.r));
         this.h += 20;
       } else if (this.h > this.r/4) {
-        gameStep = 'WATCHING';
+        
+        if(playCount > 5){
+          gameStep = 'STANDBY';
+          playCount = 0;
+        } else {
+          gameStep = 'WATCHING';
+        }
       }
       break;
 
