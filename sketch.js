@@ -86,6 +86,8 @@ var playCount;
 
 var sizeFace;
 
+
+
 var gif_fire01, gif_fire02, gif_fire03;
 
 
@@ -153,7 +155,7 @@ function setup() {
 
   songStart.setVolume(0.5);
   songComplete.setVolume(0.5);
-  songPlayshort.setVolume(0.5);
+  songPlayshort.setVolume(0.8);
   songPlaylong.setVolume(0.5);
   songOut.setVolume(0.5);
   songWarning.setVolume(0.5);
@@ -169,6 +171,7 @@ function setup() {
   playCount = 0;
   sizeFace = 0;
   
+
   button = createButton('fullscreen');
   button.position(0,0);
   button.mousePressed(full);
@@ -491,10 +494,19 @@ function draw() {
         songStart.play();
         songStart.onended(playCallback);
       }else if(gameStep == 'PLAY') {
-        if(sizeFace <= 10000) {
+        /* Play speed changes to the recognized face size */
+        // if(sizeFace <= 10000) {
+        //   songPlaylong.play();
+        //   songPlaylong.onended(openCallback);
+        // } else if (sizeFace > 10000) {
+        //   songPlayshort.play();
+        //   songPlayshort.onended(openCallback);
+        // }
+        /* Play speed changes randomly */
+        if(random(-1,1) > 0) {
           songPlaylong.play();
           songPlaylong.onended(openCallback);
-        } else if (sizeFace > 10000) {
+        } else if (random(-1,1) <= 0) {
           songPlayshort.play();
           songPlayshort.onended(openCallback);
         }
