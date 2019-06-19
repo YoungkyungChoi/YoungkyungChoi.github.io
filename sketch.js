@@ -12,17 +12,16 @@ var faceDetected; //indicator for the face detection
 
 var eye; // the eye display
 
-var synth = []; // beep sound 
+//var synth = []; // beep sound 
 
 var w = 1024;
 var h = 768;
 
-var gameStep;
 
-var pixelCal;
+
 
 /* for sound */
-var songStart, songPlay, songComplete, songOut, songWarning, songWatching,
+var songStart, songPlayshort, songComplete, songOut, songWarning, songWatching, songPlaylong,
 standbyCallback = function() {
   console.info("standby");
   gameStep = 'STANDBY';
@@ -76,6 +75,8 @@ closeCallback = function() {
 var gameStart;
 var gameStep;
 
+var pixelCal;
+
 var countCurrent;
 var countPrevious;
 var delta;
@@ -83,22 +84,20 @@ var delta;
 var watchTime;
 var playCount;
 
+var sizeFace;
+
 var gif_fire01, gif_fire02, gif_fire03;
 
 
 function preload() {
   soundFormats('m4a');
   songStart = loadSound('assets/start.m4a');
-  //songStart.onended(startCallback);
-  songPlay= loadSound('assets/play.m4a');
-  //songPlay.onended(playCallback);
+  songPlayshort = loadSound('assets/play02.m4a');
+  songPlaylong = loadSound('assets/play01.m4a')
   songComplete = loadSound('assets/complete.m4a');
-  //songComplete.onended(completeCallback);
-  songOut = loadSound('assets/out.m4a');
-  //songOut.onended(outCallback);
+  songOut = loadSound('assets/out.m4a');  
   songWarning = loadSound('assets/warning.m4a');
-  //songWarning.onended(warningCallback);
-  //songWatching = loadSound('assets/watching.m4a');
+
   gif_fire01 = createImg('assets/fire01.gif');
   gif_fire02 = createImg('assets/fire01.gif');
   gif_fire03 = createImg('assets/fire01.gif');
@@ -113,15 +112,15 @@ function preload() {
 
 function setup() {
   cnv = createCanvas(w, h); 
-  cnv.parent('container');
+    
   myCapture = createCapture(VIDEO);
   myCapture.size(w/3, h/3);
   myCapture.elt.setAttribute('playsinline', '');
   myCapture.parent('container');
   //myCapture.hide();
-  //cnv = createCanvas(w, h); 
-  cnv.parent('container');
 
+  
+  cnv.parent('container');
   tracker = new tracking.ObjectTracker(['face']);
   tracker.setInitialScale(4);
   tracker.setStepSize(2);
@@ -134,12 +133,19 @@ function setup() {
   tracker.on('track', function (event) {
       cnv.clear();
       faceDetected = 0;
+      //sizeFace = 0;
       strokeWeight(4);
       stroke(255, 0, 200);
       noFill();
       event.data.forEach(function (r) {
           rect(r.x, r.y, r.width, r.height);
           faceDetected = 1;
+          sizeFace = r.width * r.height;
+          textSize(15);
+          strokeWeight(1);
+          textAlign(RIGHT,BOTTOM);
+          text(sizeFace,r.x+r.width,r.y+r.height);
+
       })
   });
 
@@ -147,7 +153,8 @@ function setup() {
 
   songStart.setVolume(0.5);
   songComplete.setVolume(0.5);
-  songPlay.setVolume(0.5);
+  songPlayshort.setVolume(0.5);
+  songPlaylong.setVolume(0.5);
   songOut.setVolume(0.5);
   songWarning.setVolume(0.5);
 
@@ -160,6 +167,7 @@ function setup() {
 
   watchTime = 0;
   playCount = 0;
+  sizeFace = 0;
   
   button = createButton('fullscreen');
   button.position(0,0);
@@ -291,11 +299,14 @@ function setup() {
 }
 
 function draw() {
+  if(!fullscreen()) {
+    button.show();
+  } else {
+    button.hide();
+  }
   fill(0);
   noStroke();
-  rect(w/3,0,1524,h);
-  //fill(255);
-  //rect(w/3, 5*h/6,w,h);
+  rect(w/3,0,w,h);
   
 
   if(myCapture !== null && myCapture !== undefined) { // safety first
@@ -318,13 +329,13 @@ function draw() {
    
     textSize(30);
     fill(255,0,200);
-    textAlign(LEFT,BOTTOM);
+    textAlign(LEFT,TOP);
     // let's also describe the displayed images
     noStroke(); fill(255, 0, 255);
-    text('Face Detection', 0, h/3);
+    text('Face Detection', 0, 0);
     //text('vida: progressive background image', 340, 20);
-    text('Zone Detection', 0, h);
-    text('Motion Detection', 0, h*2/3);
+    text('Zone Detection', 0, h*2/3);
+    text('Motion Detection', 0, h/3);
     
     /*
       VIDA has two built-in versions of the function drawing active zones:
@@ -439,15 +450,14 @@ function draw() {
   
 
   loadPixels();
-  
-  
+    
   countPrevious = countCurrent;
   countCurrent = 0;
-  for(var y = 480; y < 720  ; y++) {
-    for (var x = 0 ; x < 320 ; x++) {
-      var index = (x + y * 960) * 4;
+  for(var y = h*2/3; y < h  ; y++) {
+    for (var x = 0 ; x < w/3 ; x++) {
+      var index = (x + y * w) * 4;
       //pixels[index+0] =255;
-      //pixels[index+1] =255;
+      //pixels[index+1] =0;
       //pixels[index+2] =255;
       //pixels[index+3] =255;
       if(pixels[index+0] == 255 &&  pixels[index+1] == 255 && pixels[index+2] == 255 && pixels[index+3] == 255){
@@ -455,51 +465,56 @@ function draw() {
 
     }
   }
-}
+  }
   
   
   updatePixels();
   delta = countCurrent - countPrevious;
   fill(255,0,255);
   textSize(15);
-  text('Movement : ' + countCurrent,20,h/3 + 40 + 10);
-  text('Delta : '+ delta, 20,h/3 + 40 + 30);
+  text('Movement : ' + countCurrent,0,h/3 + 20 + 10);
+  text('Delta : '+ delta, 0,h/3 + 20 + 30);
   
 
   stroke(0);
   strokeWeight(5);
-  
-  if(faceDetected == 1 || countCurrent > 2000) {
+  console.info(sizeFace);
+  if((faceDetected == 1 || countCurrent > 1500) && sizeFace <= 10000 ) {
     gameStart = true; 
   } else if (faceDetected == 0) {
     
   }
   
   if(gameStart) {
-    if(!songStart.isPlaying() && !songPlay.isPlaying() && !songComplete.isPlaying() && !songOut.isPlaying() && !songWarning.isPlaying()) {
+    if(!songStart.isPlaying() && !songPlayshort.isPlaying() && !songPlaylong.isPlaying() && !songComplete.isPlaying() && !songOut.isPlaying() && !songWarning.isPlaying()) {
       if(gameStep == 'START') {
         songStart.play();
         songStart.onended(playCallback);
       }else if(gameStep == 'PLAY') {
-        // if(playCount == 5) {
-        //   gameStep = 'STANDBY';
-        //   console.info("count reset");
-        //   playCount = 0;
-        // }
-        songPlay.play();
-        songPlay.onended(openCallback);
+        if(sizeFace <= 10000) {
+          songPlaylong.play();
+          songPlaylong.onended(openCallback);
+        } else if (sizeFace > 10000) {
+          songPlayshort.play();
+          songPlayshort.onended(openCallback);
+        }
       }else if (gameStep == 'OPEN') {
         eye.display(7,'OPEN',false);
-
       }else if(gameStep == 'WATCHING') {
-        console.info('now watching');
+        //console.info('now watching');
         eye.display(7,'WATCHING',false);
-        if(countCurrent > 2000 && delta > 0) {
-          console.info("threshold");
-          console.info(gameStep);
-
-          gameStep = 'OUT';
-          watchTime = 0;
+        if(faceDetected == 1) {
+          if(countCurrent > 2000 && delta > 0) {
+            //console.info("threshold");
+            //console.info(gameStep);
+            gameStep = 'OUT';
+            watchTime = 0;
+          }
+        } else if(faceDetected ==0) {
+          if(countCurrent > 500 && delta >0) {
+            gameStep = 'OUT';
+            watchTime = 0;
+          }
         }
       }else if(gameStep == 'CLOSE') {
         eye.display(7,'CLOSE',false);
@@ -511,36 +526,34 @@ function draw() {
         gameStep = "START";
       }
     } else if(songStart.isPlaying()) {
-      console.info("start"); 
+      //console.info("start"); 
       eye.display(7,'START', false);
 
-    } else if(songPlay.isPlaying()) {
+    } else if(songPlayshort.isPlaying() || songPlaylong.isPlaying()) {
         eye.display(7,'CLOSED',false);
-        
     } else if(songOut.isPlaying()) {
       eye.display(7,'OUT', false);
     } else if(songComplete.isPlaying()) {
       eye.display(7,'COMPLETE', false); 
-      
     }
   } else if (!gameStart) {
     eye.display(7,'STANDBY',false);
 
   }
-  //stroke(200,0,200);
-  //rect(0,0,w,h);
 }
- 
 
 function full() {
+  //button.hide();
+  
   var fs = fullscreen();
   fullscreen(!fs);
 }
 
  
 function touchStarted() {
-   if(songPlay.isPlaying() && !songComplete.isPlaying() && !songOut.isPlaying() && !songStart.isPlaying() && !songWarning.isPlaying()) {
-      songPlay.stop();
+   if((songPlayshort.isPlaying() || songPlaylong.isPlaying()) && !songComplete.isPlaying() && !songOut.isPlaying() && !songStart.isPlaying() && !songWarning.isPlaying()) {
+      songPlayshort.stop();
+      songPlaylong.stop();
       if(!songComplete.isPlaying()) {
         console.info("complete");
         songComplete.play();
@@ -719,6 +732,12 @@ class Eye {
           }       
         }
       }
+      fill(255);
+      textSize(70);
+      textAlign(CENTER,CENTER);
+      text("STEP BACK", 2*w/3, h/6 - 30);
+      text("TO PLAY", 2*w/3, h/6 + 40);
+      
       break;
 
       case 'START':
@@ -839,7 +858,7 @@ class Eye {
         this.h += 20;
       } else if (this.h > this.r/4) {
         
-        if(playCount > 5){
+        if(playCount > 10){
           gameStep = 'STANDBY';
           playCount = 0;
         } else {
