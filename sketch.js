@@ -482,7 +482,7 @@ function draw() {
   stroke(0);
   strokeWeight(5);
   console.info(sizeFace);
-  if((faceDetected == 1 || countCurrent > 1500) && sizeFace <= 10000 ) {
+  if(faceDetected == 1 || countCurrent > 1500) {
     gameStart = true; 
   } else if (faceDetected == 0) {
     
