@@ -457,7 +457,7 @@ function draw() {
   countPrevious = countCurrent;
   countCurrent = 0;
   for(var y = h*2/3; y < h  ; y++) {
-    for (var x = 0 ; x < w/3 ; x++) {
+    for (var x = 0 ; x < w/3 - 80; x++) {
       var index = (x + y * w) * 4;
       //pixels[index+0] =255;
       //pixels[index+1] =0;
